@@ -37,8 +37,9 @@ govtechfullstackassignment/
 
 ## Getting started
 
-The app has two parts — the **backend API** and the **frontend SPA** — that run in
-two separate terminals. Set up the database first, then the backend, then the frontend.
+The app has two parts the **backend API** and the **frontend SPA** that run in
+two separate terminals. 
+Set up the database first, then the backend, then the frontend.
 
 ### 1. Database
 
@@ -64,8 +65,8 @@ npm install
 # Create your environment file from the template and fill in your DB password
 cp .env.example .env
 
-npm run dev      # starts on http://localhost:5000 with auto-reload
-# or: npm start  # plain node, no auto-reload
+npm run dev      # start on http://localhost:5000 with auto-reload
+# or: npm start  
 ```
 
 Required environment variables (see [`backend/.env.example`](backend/.env.example)):
@@ -86,7 +87,7 @@ In a second terminal:
 ```bash
 cd frontend
 npm install
-npm run dev      # starts on http://localhost:5173
+npm run dev      # start on http://localhost:5173
 ```
 
 Open **http://localhost:5173** in your browser. Vite proxies all `/api/*` requests
@@ -101,10 +102,10 @@ needed in development.
 Both sides have unit tests that run without any external services.
 
 ```bash
-# Backend — Jest + Supertest (database pool is mocked)
+# Backend: Jest + Supertest (database pool is mocked)
 cd backend && npm test
 
-# Frontend — Vitest + React Testing Library
+# Frontend: Vitest + React Testing Library
 cd frontend && npm test
 ```
 
@@ -118,7 +119,7 @@ form-validation rules and a component render test.
 
 Base path: `/api`. All request and response bodies are JSON.
 
-### `POST /api/teachers` — register a teacher
+### `POST /api/teachers` —> Register a teacher
 
 Request:
 
@@ -133,7 +134,7 @@ Request:
 
 Success: `201 Created`.
 
-### `GET /api/teachers` — list teachers
+### `GET /api/teachers` —> List teachers
 
 Success: `200 OK`.
 
@@ -150,7 +151,7 @@ Success: `200 OK`.
 }
 ```
 
-### `POST /api/classes` — add a class
+### `POST /api/classes` —> Add a class
 
 Request:
 
@@ -164,7 +165,7 @@ Request:
 
 Success: `201 Created`.
 
-### `GET /api/classes` — list classes
+### `GET /api/classes` —> List classes
 
 Success: `200 OK`.
 
@@ -214,14 +215,6 @@ Every error returns an appropriate HTTP status and a JSON body of the form:
   Add Class screen links to the Add Teacher screen when none exist.
 - Deleting a teacher who is a form teacher is blocked at the DB level
   (`ON DELETE RESTRICT`).
-
----
-
-## Hosted links
-
-> Not deployed. The app runs locally per the instructions above.
->
-> _(If deployed later, add the web app and API URLs here.)_
 
 ---
 
