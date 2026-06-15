@@ -7,7 +7,7 @@ const registerTeacher = async (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  // Normalize: trim text, lowercase the email, strip spaces from the number.
+  // Trim text, lowercase the email and strip spaces 
   const name = req.body.name.trim();
   const subject = req.body.subject.trim();
   const email = req.body.email.trim().toLowerCase();
