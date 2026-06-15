@@ -1,16 +1,84 @@
-# React + Vite
+# Frontend — School Administration Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 single-page app (Vite + React Router) for managing teachers and classes.
 
-Currently, two official plugins are available:
+For the full project overview, API reference, and assumptions, see the
+[root README](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Prerequisites
 
-## React Compiler
+- Node.js 18+
+- The [backend API](../backend/README.md) running on `http://localhost:5000`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup & running
 
-## Expanding the ESLint configuration
+```bash
+npm install
+npm run dev      # starts the dev server on http://localhost:5173
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Then open **http://localhost:5173**.
+
+During development, Vite proxies every `/api/*` request to the backend at
+`http://localhost:5000` (see [`vite.config.js`](vite.config.js)), so make sure the
+backend is running first.
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server with hot reload |
+| `npm run build` | Build a production bundle into `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run the Vitest suite once |
+| `npm run test:watch` | Run Vitest in watch mode |
+
+## Tests
+
+Tests use **Vitest** and **React Testing Library** (jsdom environment). Coverage
+includes the form-validation rules and a Navbar component render test. Run them with:
+
+```bash
+npm test
+```
+
+## Routes
+
+| Path | Screen |
+| --- | --- |
+| `/teachers` | List of teachers (default route) |
+| `/teachers/new` | Add a teacher |
+| `/classes` | List of classes |
+| `/classes/new` | Add a class |
+
+## Project structure
+
+```
+frontend/src/
+├── main.jsx              # App entry, router setup
+├── App.jsx               # Routes + layout
+├── components/
+│   └── Navbar.jsx
+├── pages/
+│   ├── TeachersPage.jsx
+│   ├── AddTeacherPage.jsx
+│   ├── ClassesPage.jsx
+│   └── AddClassPage.jsx
+├── api/                  # Fetch helpers + resource clients
+│   ├── http.js
+│   ├── teachers.js
+│   └── classes.js
+├── constants/            # Subject and class-level dropdown options
+│   ├── subjects.js
+│   └── classLevels.js
+└── utils/
+    └── validation.js     # Client-side form validation
+```
+
+## Form validation
+
+- **Email** must be a `@gmail.com` address.
+- **Work contact number** must be exactly 8 digits.
+
+See [`src/utils/validation.js`](src/utils/validation.js).
