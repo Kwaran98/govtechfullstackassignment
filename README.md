@@ -18,7 +18,7 @@ govtechfullstackassignment/
 
 ## Live demo
 
-- **Web app (Vercel):** https://YOUR-APP.vercel.app
+- **Web app (Vercel):** https://govtechfullstackassignment.vercel.app
 - **API (Render):** https://govtechfullstackassignment.onrender.com
 
 > Hosted on free tiers, so the **first request after a period of inactivity may take
