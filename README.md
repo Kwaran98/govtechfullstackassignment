@@ -249,5 +249,4 @@ frontend uses the dev proxy in [`frontend/vite.config.js`](frontend/vite.config.
 
 - The frontend and backend are both written in **JavaScript** (single language
   across the stack, per the brief).
-- Server-side responses never leak internal database columns — controllers map rows
-  to the exact response shape specified by the API.
+
