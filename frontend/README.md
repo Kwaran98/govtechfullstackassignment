@@ -1,4 +1,4 @@
-# Frontend — School Administration Portal
+# Frontend School Administration Portal
 
 React 19 single-page app (Vite + React Router) for managing teachers and classes.
 
@@ -42,6 +42,13 @@ includes the form-validation rules and a Navbar component render test. Run them 
 ```bash
 npm test
 ```
+
+## Deployment
+
+Deployed on **Vercel** (root directory `frontend`). The build is a static Vite
+bundle and needs **no environment variables**. 
+In production, `/api/*` requests are proxied to the backend via [`vercel.json`](vercel.json) — update the destination URL there if the backend host changes. This file is only used by Vercel.
+Local dev continues to use the proxy in [`vite.config.js`](vite.config.js).
 
 ## Routes
 

@@ -1,6 +1,6 @@
-# Backend — School Administration API
+# Backend School Administration API
 
-Express 5 REST API backed by PostgreSQL. Handles teachers and classes.
+ExpressJS REST API backed by PostgreSQL. Handles teachers and classes.
 
 For the full project overview, API reference, and assumptions, see the
 [root README](../README.md).
@@ -19,8 +19,8 @@ npm install
 createdb govtech_assignment
 psql -d govtech_assignment -f schema.sql
 
-# Configure environment variables
-cp .env.example .env   # then edit .env with your DB credentials
+# Configure environment variables and edit .env with your DB credentials
+cp .env.example .env   
 ```
 
 ### Environment variables
@@ -53,7 +53,18 @@ npm test       # runs the Jest suite
 
 Tests use **Jest** and **Supertest**. The database pool is mocked, so the suite
 runs without a real Postgres connection. Coverage includes the validation rules
-and every endpoint (success, validation, not-found, conflict, and error paths).
+and every endpoint such as success, validation, not-found, conflict, and error paths.
+
+## Deployment
+
+Deployed as a web service on **Render**. The root directory `backend`, start command `npm start`
+The database is managed by **Neon** PostgreSQL database.
+
+In production the database connection uses a single `DATABASE_URL` environment
+variable with SSL. Locally it falls back to the individual `DB_*` variables (see
+[`src/config/db.js`](src/config/db.js)). 
+
+Set `DATABASE_URL` in the Render dashboard.
 
 ## Endpoints
 
@@ -73,7 +84,7 @@ See the [root README](../README.md#api-reference) for full request/response exam
 backend/
 ├── src/
 │   ├── server.js                       # Entry point: loads env + starts the server
-│   ├── app.js                          # Express app (exported for tests)
+│   ├── app.js                          # Express app 
 │   ├── config/
 │   │   └── db.js                       # PostgreSQL connection pool
 │   ├── routes/

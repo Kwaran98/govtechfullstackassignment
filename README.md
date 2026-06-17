@@ -16,6 +16,17 @@ govtechfullstackassignment/
 
 ---
 
+## Live demo
+
+- **Web app (Vercel):** https://YOUR-APP.vercel.app
+- **API (Render):** https://govtechfullstackassignment.onrender.com
+
+> Hosted on free tiers, so the **first request after a period of inactivity may take
+> ~30 seconds** while the backend and database wake from sleep. Subsequent requests
+are fast.
+
+---
+
 ## Features
 
 | User story | Screen | API |
@@ -215,6 +226,22 @@ Every error returns an appropriate HTTP status and a JSON body of the form:
   Add Class screen links to the Add Teacher screen when none exist.
 - Deleting a teacher who is a form teacher is blocked at the DB level
   (`ON DELETE RESTRICT`).
+
+---
+
+## Deployment
+
+The app is deployed across three services, all from this **single repository**:
+
+| Part | Platform | Configuration |
+| --- | --- | --- |
+| Frontend | **Vercel** | Root directory `frontend`. `/api/*` requests are proxied to the API via [`frontend/vercel.json`](frontend/vercel.json), so no CORS setup is needed. |
+| Backend | **Render** | Root directory `backend`. Start command `npm start`. `DATABASE_URL` set as an environment variable. |
+| Database | **Neon** | Managed PostgreSQL. Schema loaded once from [`backend/schema.sql`](backend/schema.sql). |
+
+Local development is unaffected by the hosting config: when running locally, the
+frontend uses the dev proxy in [`frontend/vite.config.js`](frontend/vite.config.js)
+(`vercel.json` is only read by Vercel in production).
 
 ---
 
