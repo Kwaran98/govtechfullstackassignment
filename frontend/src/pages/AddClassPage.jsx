@@ -5,24 +5,35 @@ import { getTeachers } from '../api/teachers'
 import { CLASS_LEVELS } from '../constants/classLevels'
 import { validateClass } from '../utils/validation'
 
+// The form starts blank
+// This shape also defines which fields the form tracks
+
 const EMPTY_FORM = {
   level: '',
   name: '',
   teacherEmail: '',
 }
 
+// Page for creating a new class and assigning one of the existing teachers
+// as its form teacher
 function AddClassPage() {
   const navigate = useNavigate()
-  const [form, setForm] = useState(EMPTY_FORM)
-  const [errors, setErrors] = useState({})
-  const [submitted, setSubmitted] = useState(false)
-  const [submitError, setSubmitError] = useState('')
-  const [saving, setSaving] = useState(false)
 
+  // Form values and the state around validating them
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [errors, setErrors] = useState({}) // per-field validation messages
+  const [submitted, setSubmitted] = useState(false) // has the user tried to submit yet
+  const [submitError, setSubmitError] = useState('') // error from the API call
+  const [saving, setSaving] = useState(false) // disables the button while saving
+
+  // Teachers populate the "Form Teacher" dropdown.
   const [teachers, setTeachers] = useState([])
   const [teachersLoaded, setTeachersLoaded] = useState(false)
 
+  // Load the list of teachers once when the page mounts
   useEffect(() => {
+    // `active` guards against setting state after the component unmounts
+    //  An example like if the user navigates away before the request finishes
     let active = true
     getTeachers()
       .then((data) => {
@@ -42,6 +53,9 @@ function AddClassPage() {
 
   const hasTeachers = teachers.length > 0
 
+  // Update a single field. 
+  // Once the user has attempted a submit, re-validate on every keystroke so the error messages stay live as they fix them.
+
   function updateField(field, value) {
     const next = { ...form, [field]: value }
     setForm(next)
@@ -55,6 +69,7 @@ function AddClassPage() {
     setSubmitted(true)
     setSubmitError('')
 
+    // Validate on the client first; bail out before calling the API if invalid.
     const validationErrors = validateClass(form)
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
@@ -66,8 +81,10 @@ function AddClassPage() {
         name: form.name.trim(),
         teacherEmail: form.teacherEmail,
       })
+      // On success, go back to the list where the new class will appear.
       navigate('/classes')
     } catch (err) {
+      // Surface the backend's error message (e.g. teacher already assigned).
       setSubmitError(err.message)
     } finally {
       setSaving(false)
@@ -120,6 +137,10 @@ function AddClassPage() {
           {errors.name && <p className="field-error">{errors.name}</p>}
         </div>
 
+        {/* Form Teacher picker. A class needs a teacher to exist first, so the
+            dropdown is disabled when there are none, and a shortcut is offered to
+            go create one. */}
+
         <div className="form__field">
           <label className="form__label" htmlFor="teacherEmail">
             Form Teacher
@@ -142,6 +163,8 @@ function AddClassPage() {
               </option>
             ))}
           </select>
+          {/* Only show the shortcut once the fetch has finished and found none,
+              so it doesn't flash while teachers are still loading. */}
           {teachersLoaded && !hasTeachers && (
             <Link to="/teachers/new" className="field-link">
               Add a teacher

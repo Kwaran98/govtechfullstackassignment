@@ -4,6 +4,7 @@ import { createTeacher } from '../api/teachers'
 import { SUBJECTS } from '../constants/subjects'
 import { validateTeacher } from '../utils/validation'
 
+// The form starts blank. This shape also defines which fields the form tracks
 const EMPTY_FORM = {
   name: '',
   subject: '',
@@ -11,18 +12,20 @@ const EMPTY_FORM = {
   contactNumber: '',
 }
 
+// Page for registering a new teacher
 function AddTeacherPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState(EMPTY_FORM)
-  const [errors, setErrors] = useState({})
-  const [submitted, setSubmitted] = useState(false)
-  const [submitError, setSubmitError] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [errors, setErrors] = useState({}) // per-field validation messages
+  const [submitted, setSubmitted] = useState(false) // has the user tried to submit yet
+  const [submitError, setSubmitError] = useState('') // error from the API call
+  const [saving, setSaving] = useState(false) // disables the button while saving
 
+  // Update a single field. Once the user has attempted a submit, re-validate
+  // on every keystroke so the error messages stay live as they fix them
   function updateField(field, value) {
     const next = { ...form, [field]: value }
     setForm(next)
-    // Once the user has tried to submit, keep errors live as they type.
     if (submitted) {
       setErrors(validateTeacher(next))
     }
@@ -33,6 +36,7 @@ function AddTeacherPage() {
     setSubmitted(true)
     setSubmitError('')
 
+    // Validate on the client first; bail out before calling the API if invalid
     const validationErrors = validateTeacher(form)
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
@@ -45,8 +49,10 @@ function AddTeacherPage() {
         email: form.email.trim(),
         contactNumber: form.contactNumber.trim(),
       })
+      // On success, go back to the list where the new teacher will appear
       navigate('/teachers')
     } catch (err) {
+      // Surface the backend's error message like if the email already exists
       setSubmitError(err.message)
     } finally {
       setSaving(false)

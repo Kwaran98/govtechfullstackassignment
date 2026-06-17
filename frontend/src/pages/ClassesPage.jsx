@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getClasses } from '../api/classes'
 
+// Small reusable button that links to the "Add Class" form. Used in both the
+// header (when classes exist) and the empty state.
 function AddClassButton({ className }) {
   return (
     <Link to="/classes/new" className={`btn btn--primary ${className ?? ''}`}>
@@ -10,12 +12,17 @@ function AddClassButton({ className }) {
   )
 }
 
+// Page that lists all classes. Rendering is driven by a single `status` value
+// so the screen always shows exactly one of: loading, error, empty, or the table.
 function ClassesPage() {
   const [classes, setClasses] = useState([])
   const [status, setStatus] = useState('loading') // loading | ready | error
   const [error, setError] = useState('')
 
+  // Fetch the classes once when the page mounts.
   useEffect(() => {
+    // `active` prevents state updates if the user navigates away before the
+    // request resolves (avoids a React "set state on unmounted component" warning).
     let active = true
 
     getClasses()
@@ -41,8 +48,13 @@ function ClassesPage() {
     <div className="page">
       <div className="page__header">
         <h1 className="page__title">Classes</h1>
+        {/* The header "Add" button only appears once there are classes to show;
+            In the empty state the button lives inside the empty card instead. */}
         {status === 'ready' && !isEmpty && <AddClassButton />}
       </div>
+
+      {/* The four blocks below are mutually exclusive — `status` (plus isEmpty)
+          guarantees only one renders at a time. */}
 
       {status === 'loading' && (
         <div className="card card--centered">
@@ -76,10 +88,13 @@ function ClassesPage() {
             </thead>
             <tbody>
               {classes.map((cls, index) => (
+                // level + name uniquely identifies a class row the API does not expose an id
+                //  `index + 1` is just the display number
                 <tr key={`${cls.level}-${cls.name}`}>
                   <td className="table__index">{index + 1}</td>
                   <td>{cls.level}</td>
                   <td>{cls.name}</td>
+                  {/* formTeacher is a nested object which is guarded in case it's missing */}
                   <td>{cls.formTeacher?.name}</td>
                 </tr>
               ))}

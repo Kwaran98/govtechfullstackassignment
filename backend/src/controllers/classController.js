@@ -7,7 +7,7 @@ const addNewClass = async (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  // Normalize: trim text, lowercase the email so it matches stored teachers.
+  // Lowercase the email so it matches how teachers are stored on insert.
   const level = req.body.level.trim();
   const name = req.body.name.trim();
   const teacherEmail = req.body.teacherEmail.trim().toLowerCase();
@@ -19,7 +19,7 @@ const addNewClass = async (req, res) => {
       [teacherEmail]
     );
 
-    // Handle teacher-not-found
+    // A class requires a real form teacher, so reject unknown emails.
     if (teacher.rows.length === 0) {
       return res
         .status(404)
@@ -32,13 +32,15 @@ const addNewClass = async (req, res) => {
       [level, name, teacher.rows[0].id]
     );
 
+    // Respond in the same shape as GET /api/classes
     return res.status(201).json({
       level,
       name,
       formTeacher: { name: teacher.rows[0].name },
     });
   } catch (error) {
-    // teacher already a form teacher of another class
+    // 23505 dictates Postgres unique_violation. The UNIQUE constraint on
+    // classes.form_teacher_id enforces "one class per form teacher".
     if (error.code === "23505") {
       return res.status(409).json({
         error: "This teacher is already a form teacher of another class",
@@ -51,6 +53,7 @@ const addNewClass = async (req, res) => {
 
 const getClasses = async (req, res) => {
   try {
+    // Join to resolve each class's form_teacher_id into the teacher's name.
     const result = await pool.query(
       `SELECT c.level, c.name, t.name AS teacher_name
        FROM classes c
@@ -58,6 +61,7 @@ const getClasses = async (req, res) => {
        ORDER BY c.level, c.name`
     );
 
+    // Reshape flat rows into the nested API response the spec expects.
     const data = result.rows.map((row) => ({
       level: row.level,
       name: row.name,

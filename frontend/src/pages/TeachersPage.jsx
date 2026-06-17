@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getTeachers } from '../api/teachers'
 
+// Small reusable button that links to the "Add Teacher" form. Used in both the
+// header when teachers exist and the empty state.
 function AddTeacherButton({ className }) {
   return (
     <Link to="/teachers/new" className={`btn btn--primary ${className ?? ''}`}>
@@ -10,12 +12,17 @@ function AddTeacherButton({ className }) {
   )
 }
 
+// Page that lists all teachers. Rendering is driven by a single `status` value
+// so the screen always shows exactly one of the status: loading, error, empty, or the table.
+
 function TeachersPage() {
   const [teachers, setTeachers] = useState([])
   const [status, setStatus] = useState('loading') // loading | ready | error
   const [error, setError] = useState('')
 
+  // Fetch the teachers once when the page mounts.
   useEffect(() => {
+    // `active` prevents state updates if the user navigates away before the request resolves 
     let active = true
 
     getTeachers()
@@ -41,8 +48,13 @@ function TeachersPage() {
     <div className="page">
       <div className="page__header">
         <h1 className="page__title">Teachers</h1>
+        {/* The header "Add" button only appears once there are teachers to show;
+            in the empty state the button lives inside the empty card instead. */}
         {status === 'ready' && !isEmpty && <AddTeacherButton />}
       </div>
+
+      {/* The four blocks below are mutually exclusive `status` 
+          guarantees only one renders at a time. */}
 
       {status === 'loading' && (
         <div className="card card--centered">
@@ -77,6 +89,9 @@ function TeachersPage() {
             </thead>
             <tbody>
               {teachers.map((teacher, index) => (
+                // email is unique per teacher, so it's a stable row key
+                // The API does not expose an id
+                // `index + 1` is the display number.
                 <tr key={teacher.email}>
                   <td className="table__index">{index + 1}</td>
                   <td>{teacher.name}</td>
